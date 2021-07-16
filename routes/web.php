@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
+use App\Http\Controllers\BookmarkController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,7 +12,9 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::post('/search', [BookmarkController::class, 'search']);
+Route::resource('/', BookmarkController::class);
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-});
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
