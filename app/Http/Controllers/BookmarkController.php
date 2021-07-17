@@ -16,7 +16,7 @@ class BookmarkController extends Controller
    */
   public function index(Request $request)
   {
-    $bookmarksList = Bookmark::orderBy('id', 'desc')->paginate(15);
+    $bookmarksList = Bookmark::orderBy('id', 'desc')->paginate(5);
     return Inertia::render('Home/index', compact('bookmarksList'));
   }
 

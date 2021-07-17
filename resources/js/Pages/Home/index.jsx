@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../../components/layout";
 import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function Home({ bookmarksList }) {
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarks, setBookmarks] = useState("");
   const [searchState, setSearchState] = useState("");
+  const [page, setPage] = useState(0);
   let cancelToken;
 
   const search = (data) => {
@@ -21,16 +23,26 @@ function Home({ bookmarksList }) {
       });
   };
 
+  const handlePagenate = (page) => {
+    axios.get(`/?page=${page}`).then(res => {
+      console.log(res.data);
+    })
+  };
+
   useEffect(() => {
     if (!searchState) {
       setBookmarks(bookmarksList.data);
     }
     setIsLoading(false);
-  }, [bookmarks]);
+  }, [bookmarks, page]);
 
   return (
-    <div>
-      <Layout search={search}>
+      <InfiniteScroll
+        dataLength={bookmarks.length}
+        next={() => handlePagenate(2)}
+        hasMore={true}
+      >
+    <Layout search={search}>
         {bookmarks.length > 0 ? (
           <div className='grid grid-cols-4 gap-4'>
             {bookmarks &&
@@ -52,7 +64,7 @@ function Home({ bookmarksList }) {
                     >
                       <h3 className='text-white leading-5 font-semibold'>
                         <a href={bookmark.url}>
-                          lofi hip hop radio - beats to sleep/chill
+                          {bookmark.title}
                         </a>
                       </h3>
                       <p className='text-xs text-white mt-1'>
@@ -67,8 +79,8 @@ function Home({ bookmarksList }) {
         ) : (
           <div>no data found</div>
         )}
-      </Layout>
-    </div>
+    </Layout>
+      </InfiniteScroll>
   );
 }
 
