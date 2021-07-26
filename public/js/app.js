@@ -2768,6 +2768,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_infinite_scroll_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-infinite-scroll-component */ "./node_modules/react-infinite-scroll-component/dist/index.es.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -2797,7 +2805,7 @@ function Home(_ref) {
       isLoading = _useState2[0],
       setIsLoading = _useState2[1];
 
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(bookmarksList.data),
       _useState4 = _slicedToArray(_useState3, 2),
       bookmarks = _useState4[0],
       setBookmarks = _useState4[1];
@@ -2807,10 +2815,15 @@ function Home(_ref) {
       searchState = _useState6[0],
       setSearchState = _useState6[1];
 
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0),
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(2),
       _useState8 = _slicedToArray(_useState7, 2),
       page = _useState8[0],
       setPage = _useState8[1];
+
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(2),
+      _useState10 = _slicedToArray(_useState9, 2),
+      searchPage = _useState10[0],
+      setSearchPage = _useState10[1];
 
   var cancelToken;
 
@@ -2827,65 +2840,125 @@ function Home(_ref) {
     }, {
       cancelToken: cancelToken.token
     }).then(function (res) {
-      setBookmarks(res.data);
+      setBookmarks(res.data.data);
     });
   };
 
-  var handlePagenate = function handlePagenate(page) {
-    axios__WEBPACK_IMPORTED_MODULE_2___default().get("/?page=".concat(page)).then(function (res) {
-      console.log(res.data);
+  var handlePagenate = function handlePagenate() {
+    setPage(page + 1);
+    var nextPage = "/?page=".concat(page);
+    axios__WEBPACK_IMPORTED_MODULE_2___default().get(nextPage).then(function (res) {
+      var data = [].concat(_toConsumableArray(bookmarks), _toConsumableArray(res.data.data));
+      setBookmarks(data);
     });
+  };
+
+  var handleSearchPagenate = function handleSearchPagenate() {
+    setPage(searchPage + 1);
+    var nextPage = "http://localhost/search?page=".concat(page);
+    console.log(bookmarksList.last_page_url);
+
+    if (searchPage != bookmarksList.last_page) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default().post(nextPage).then(function (res) {
+        var data = [].concat(_toConsumableArray(bookmarks), _toConsumableArray(res.data.data));
+        setBookmarks(data);
+        console.log(data);
+      });
+    }
   };
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (!searchState) {
-      setBookmarks(bookmarksList.data);
-    }
-
+    // console.log(bookmarks);
     setIsLoading(false);
-  }, [bookmarks, page]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_infinite_scroll_component__WEBPACK_IMPORTED_MODULE_3__.default, {
-    dataLength: bookmarks.length,
-    next: function next() {
-      return handlePagenate(2);
-    },
-    hasMore: true,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_components_layout__WEBPACK_IMPORTED_MODULE_1__.default, {
-      search: search,
-      children: bookmarks.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        className: "grid grid-cols-4 gap-4",
-        children: bookmarks && bookmarks.map(function (bookmark, index) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            className: "card relative mb-16",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                className: " bg-gray-500 rounded-sm min-w-full h-52 object-cover ".concat(isLoading ? "animate-pulse" : ""),
-                src: bookmark.thambnail,
-                alt: ""
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-              style: {
-                width: "90%"
-              },
-              className: "card-body p-3  -bottom-14 left-2/4 transform -translate-x-1/2 bg-green-default absolute",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
-                className: "text-white leading-5 font-semibold",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                  href: bookmark.url,
-                  children: bookmark.title
+  }, [bookmarks]);
+
+  if (searchState) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_infinite_scroll_component__WEBPACK_IMPORTED_MODULE_3__.default, {
+      dataLength: bookmarks && bookmarks.length,
+      next: function next() {
+        return handleSearchPagenate();
+      },
+      hasMore: true,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_components_layout__WEBPACK_IMPORTED_MODULE_1__.default, {
+        search: search,
+        children: bookmarks.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          className: "grid grid-cols-4 gap-4",
+          children: bookmarks && bookmarks.map(function (bookmark, index) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "card relative mb-16",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                  className: " bg-gray-500 rounded-sm min-w-full h-52 object-cover ".concat(isLoading ? "animate-pulse" : ""),
+                  src: bookmark.thambnail,
+                  alt: ""
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-xs text-white mt-1",
-                children: "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                style: {
+                  width: "90%"
+                },
+                className: "card-body p-3  -bottom-14 left-2/4 transform -translate-x-1/2 bg-green-default absolute",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+                  className: "text-white leading-5 font-semibold",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                    href: bookmark.url,
+                    children: bookmark.title
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-xs text-white mt-1",
+                  children: "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+                })]
               })]
-            })]
-          }, index);
+            }, index);
+          })
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          children: "no data found"
         })
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        children: "no data found"
       })
-    })
-  });
+    });
+  } else {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_infinite_scroll_component__WEBPACK_IMPORTED_MODULE_3__.default, {
+      dataLength: bookmarks && bookmarks.length,
+      next: function next() {
+        return handlePagenate();
+      },
+      hasMore: true,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_components_layout__WEBPACK_IMPORTED_MODULE_1__.default, {
+        search: search,
+        children: bookmarks.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          className: "grid grid-cols-4 gap-4",
+          children: bookmarks && bookmarks.map(function (bookmark, index) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "card relative mb-16",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                  className: " bg-gray-500 rounded-sm min-w-full h-52 object-cover ".concat(isLoading ? "animate-pulse" : ""),
+                  src: bookmark.thambnail,
+                  alt: ""
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                style: {
+                  width: "90%"
+                },
+                className: "card-body p-3  -bottom-14 left-2/4 transform -translate-x-1/2 bg-green-default absolute",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+                  className: "text-white leading-5 font-semibold",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                    href: bookmark.url,
+                    children: bookmark.title
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-xs text-white mt-1",
+                  children: "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+                })]
+              })]
+            }, index);
+          })
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          children: "no data found"
+        })
+      })
+    });
+  }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Home);

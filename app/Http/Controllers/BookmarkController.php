@@ -16,15 +16,19 @@ class BookmarkController extends Controller
    */
   public function index(Request $request)
   {
-    $bookmarksList = Bookmark::orderBy('id', 'desc')->paginate(5);
-    return Inertia::render('Home/index', compact('bookmarksList'));
+    $bookmarksList = Bookmark::orderBy('id', 'desc')->paginate(10);
+    if($request->wantsJson()){
+      return $bookmarksList;
+    }else{
+      return Inertia::render('Home/index', compact('bookmarksList'));
+    }
   }
 
 
   public function search(Request $request)
   {
   
-      $bookmarksList = Bookmark::where('title', 'LIKE', '%' . $request->search . '%')->get();
+      $bookmarksList = Bookmark::where('title', 'LIKE', '%' . $request->search . '%')->orderBy('id', 'desc')->paginate(10);
       // return Redirect::route('show.search');
       return response($bookmarksList);
     

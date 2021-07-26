@@ -23,8 +23,8 @@ class BookmarkFactory extends Factory
     {
         return [
             'url' => '/storage/thambnils/stock.jpg',
-            'thambnail' => '/storage/thambnails/stock.jpg',
-            'title' => 'lofi hip hop radio - beats to sleep/chill',
+            'thambnail' => $this->faker->imageUrl,
+            'title' => $this->faker->sentence,
             'description' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
         ];
     }
